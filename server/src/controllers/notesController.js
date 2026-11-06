@@ -1,0 +1,6 @@
+import Note from '../models/Note.js'; import Investigation from '../models/Investigation.js';
+async function verify(req,id){return Investigation.exists({_id:id,userId:req.user.id})}
+export async function listNotes(req,res,next){try{if(!await verify(req,req.params.investigationId))return res.status(404).json({message:'Investigation not found.'});res.json({notes:await Note.find({userId:req.user.id,investigationId:req.params.investigationId}).sort({updatedAt:-1})});}catch(e){next(e)}}
+export async function createNote(req,res,next){try{if(!await verify(req,req.params.investigationId))return res.status(404).json({message:'Investigation not found.'});const note=await Note.create({userId:req.user.id,investigationId:req.params.investigationId,noteContent:req.body.noteContent});res.status(201).json({note});}catch(e){next(e)}}
+export async function updateNote(req,res,next){try{const note=await Note.findOneAndUpdate({_id:req.params.noteId,userId:req.user.id},{noteContent:req.body.noteContent},{new:true,runValidators:true});if(!note)return res.status(404).json({message:'Note not found.'});res.json({note});}catch(e){next(e)}}
+export async function deleteNote(req,res,next){try{const note=await Note.findOneAndDelete({_id:req.params.noteId,userId:req.user.id});if(!note)return res.status(404).json({message:'Note not found.'});res.status(204).end();}catch(e){next(e)}}

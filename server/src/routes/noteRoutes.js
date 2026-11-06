@@ -1,0 +1,1 @@
+import {Router} from 'express';import {auth} from '../middleware/auth.js';import {listNotes,createNote,updateNote,deleteNote} from '../controllers/notesController.js';const r=Router();r.use(auth);r.get('/:investigationId',listNotes);r.post('/:investigationId',createNote);r.put('/:noteId',updateNote);r.delete('/:noteId',deleteNote);export default r;

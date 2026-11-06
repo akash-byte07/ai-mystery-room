@@ -1,0 +1,3 @@
+import User from '../models/User.js'; import Investigation from '../models/Investigation.js';
+export async function stats(req,res,next){try{const u=await User.findById(req.user.id);res.json({totalInvestigations:u.totalInvestigations,solvedInvestigations:u.solvedInvestigations,totalScore:u.totalScore,successRate:u.totalInvestigations?Math.round(u.solvedInvestigations/u.totalInvestigations*100):0});}catch(e){next(e)}}
+export async function recent(req,res,next){try{res.json({investigations:await Investigation.find({userId:req.user.id}).select('caseTitle caseCategory difficulty status createdAt').sort({createdAt:-1}).limit(5)});}catch(e){next(e)}}
